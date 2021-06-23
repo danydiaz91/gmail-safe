@@ -1,0 +1,4 @@
+rootProject.name = 'gmail-safe'
+include 'gmail-safe-domain'
+include 'gmail-safe-infra'
+
