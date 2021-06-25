@@ -34,8 +34,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.OutputStream;
-
 import static io.vavr.API.Set;
 import static io.vavr.API.Tuple;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -76,7 +74,7 @@ class GetCompressedBackupTest {
 
         BackupRepositoryMock.whenFindById(backupRepositoryMock, Try.success(null));
 
-        Either<UseCaseException, OutputStream> result = getCompressedBackup.execute(query);
+        Either<UseCaseException, Void> result = getCompressedBackup.execute(query);
 
         assertThat(result.isLeft(), is(Boolean.TRUE));
         assertThat(result.getLeft(), instanceOf(BackupNotFoundException.class));
@@ -89,7 +87,7 @@ class GetCompressedBackupTest {
 
         BackupRepositoryMock.whenFindById(backupRepositoryMock, Try.success(backup));
 
-        Either<UseCaseException, OutputStream> result = getCompressedBackup.execute(query);
+        Either<UseCaseException, Void> result = getCompressedBackup.execute(query);
 
         assertThat(result.isLeft(), is(Boolean.TRUE));
         assertThat(result.getLeft(), instanceOf(BackupStatusNotValid.class));
@@ -102,7 +100,7 @@ class GetCompressedBackupTest {
 
         BackupRepositoryMock.whenFindById(backupRepositoryMock, Try.success(backup));
 
-        Either<UseCaseException, OutputStream> result = getCompressedBackup.execute(query);
+        Either<UseCaseException, Void> result = getCompressedBackup.execute(query);
 
         assertThat(result.isLeft(), is(Boolean.TRUE));
         assertThat(result.getLeft(), instanceOf(MessagesNotFound.class));
@@ -121,9 +119,9 @@ class GetCompressedBackupTest {
         BackupRepositoryMock.whenFindById(backupRepositoryMock, Try.success(backup));
         MessageTransformerMock.whenTransform(messageTransformerMock, messagesCaptor);
         MessageTransformerResolverMock.whenResolve(messageTransformerResolverMock, messageTransformerMock);
-        BackupCompressorResolverMock.whenCompress(backupCompressorResolverMock, Try::success);
+        BackupCompressorResolverMock.whenCompress(backupCompressorResolverMock, (out, data) -> Try.success(null));
 
-        Either<UseCaseException, OutputStream> result = getCompressedBackup.execute(query);
+        Either<UseCaseException, Void> result = getCompressedBackup.execute(query);
 
         assertThat(result.isRight(), is(Boolean.TRUE));
         assertThat(messagesCaptor.getValue(), containsInAnyOrder(message1, message2));
@@ -149,9 +147,9 @@ class GetCompressedBackupTest {
         BackupRepositoryMock.whenFindById(backupRepositoryMock, Try.success(backup));
         MessageTransformerMock.whenTransform(messageTransformerMock, messagesCaptor);
         MessageTransformerResolverMock.whenResolve(messageTransformerResolverMock, messageTransformerMock);
-        BackupCompressorResolverMock.whenCompress(backupCompressorResolverMock, Try::success);
+        BackupCompressorResolverMock.whenCompress(backupCompressorResolverMock, (out, data) -> Try.success(null));
 
-        Either<UseCaseException, OutputStream> result = getCompressedBackup.execute(query);
+        Either<UseCaseException, Void> result = getCompressedBackup.execute(query);
 
         assertThat(result.isRight(), is(Boolean.TRUE));
         assertThat(result.get(), not(backup));

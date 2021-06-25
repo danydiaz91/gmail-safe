@@ -18,7 +18,6 @@ import io.vavr.collection.List;
 import io.vavr.collection.Set;
 import io.vavr.control.Either;
 
-import java.io.OutputStream;
 import java.util.function.Function;
 
 import static io.vavr.API.$;
@@ -41,7 +40,7 @@ public class GetCompressedBackup {
         this.backupCompressorResolver = backupCompressorResolver;
     }
 
-    public Either<UseCaseException, OutputStream> execute(GetCompressedBackupQuery query) {
+    public Either<UseCaseException, Void> execute(GetCompressedBackupQuery query) {
         return backupRepository.findById(query.getBackupId())
                 .toEither()
                 .mapLeft(UseCaseException::new)
@@ -89,12 +88,12 @@ public class GetCompressedBackup {
         );
     }
 
-    private Either<UseCaseException, OutputStream> compressBackup(List<Message> messages, GetCompressedBackupQuery query) {
+    private Either<UseCaseException, Void> compressBackup(List<Message> messages, GetCompressedBackupQuery query) {
         MessageTransformer messageTransformer = messageTransformerResolver.resolve(query.getTransformerStrategy());
         BackupCompressor backupCompressor = backupCompressorResolver.resolve(query.getCompressorStrategy());
 
         return messageTransformer.transform(messages)
-                .flatMap(backupCompressor::compress)
+                .flatMap(bytes -> backupCompressor.compress(query.getOutputStream(), bytes))
                 .toEither()
                 .mapLeft(UseCaseException::new);
     }
