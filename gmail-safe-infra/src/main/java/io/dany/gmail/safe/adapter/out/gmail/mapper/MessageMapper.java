@@ -1,11 +1,9 @@
 package io.dany.gmail.safe.adapter.out.gmail.mapper;
 
 import com.google.api.services.gmail.model.MessagePart;
-import com.google.api.services.gmail.model.MessagePartBody;
 import com.google.api.services.gmail.model.MessagePartHeader;
 import io.dany.gmail.safe.kernel.model.ImmutableMessage;
 import io.dany.gmail.safe.kernel.model.Message;
-import io.vavr.collection.List;
 import io.vavr.control.Option;
 
 import java.util.function.Function;
@@ -15,15 +13,10 @@ public final class MessageMapper {
     private static final String HEADER_SUBJECT = "Subject";
     private static final String HEADER_FROM = "From";
     private static final String HEADER_TO = "To";
-    private static final String HEADER_CC = "Cc";
+    private static final String HEADER_CC = "CC";
     private static final String EMPTY_STRING = "";
 
     private MessageMapper() {
-    }
-
-    public static List<Message> toMessages(java.util.List<com.google.api.services.gmail.model.Message> messages) {
-        return List.ofAll(messages)
-                .map(MessageMapper::toMessage);
     }
 
     public static Message toMessage(com.google.api.services.gmail.model.Message message) {
@@ -67,13 +60,13 @@ public final class MessageMapper {
 
     private static String getBody(com.google.api.services.gmail.model.Message message) {
         return Option.of(message)
-                .map(com.google.api.services.gmail.model.Message::getPayload)
-                .map(MessagePart::getParts)
+                .flatMap(oMessage -> Option.of(oMessage.getPayload()))
+                .flatMap(messagePart -> Option.of(messagePart.getParts()))
                 .toList()
                 .flatMap(Function.identity())
                 .headOption()
-                .map(MessagePart::getBody)
-                .map(MessagePartBody::getData)
+                .flatMap(messagePart ->  Option.of(messagePart.getBody()))
+                .flatMap(messagePartBody -> Option.of(messagePartBody.getData()))
                 .getOrElse(() -> EMPTY_STRING);
     }
 }
