@@ -1,9 +1,13 @@
 package io.dany.gmail.safe.usecase.port;
 
 import io.dany.gmail.safe.kernel.model.Message;
+import io.vavr.collection.List;
+import io.vavr.control.Try;
+
+import java.io.OutputStream;
 
 @FunctionalInterface
 public interface MessageTransformer {
 
-    <T> T transform(Message message);
+    Try<OutputStream> transform(List<Message> messages);
 }

@@ -1,7 +1,8 @@
 package io.dany.gmail.safe.kernel.vo;
 
 public enum CompressorStrategy {
-    ZIP("zip");
+    ZIP("zip"),
+    DEFAULT("default");
 
     private final String value;
 

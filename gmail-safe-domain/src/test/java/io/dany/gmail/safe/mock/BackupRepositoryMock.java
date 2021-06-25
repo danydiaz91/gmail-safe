@@ -6,6 +6,7 @@ import io.vavr.collection.List;
 import io.vavr.control.Try;
 import org.mockito.ArgumentCaptor;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 
 public final class BackupRepositoryMock {
@@ -23,5 +24,11 @@ public final class BackupRepositoryMock {
         doReturn(toBeReturned)
                 .when(backupRepositoryMock)
                 .findAll();
+    }
+
+    public static void whenFindById(BackupRepository backupRepositoryMock, Try<Backup> toBeReturned) {
+        doReturn(toBeReturned)
+                .when(backupRepositoryMock)
+                .findById(anyString());
     }
 }

@@ -8,5 +8,7 @@ public interface BackupRepository {
 
     Try<Backup> save(Backup backup);
 
+    Try<Backup> findById(String id);
+
     Try<List<Backup>> findAll();
 }

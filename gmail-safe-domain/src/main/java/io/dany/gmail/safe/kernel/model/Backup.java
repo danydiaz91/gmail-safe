@@ -1,6 +1,7 @@
 package io.dany.gmail.safe.kernel.model;
 
 import io.dany.gmail.safe.kernel.vo.Status;
+import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.collection.Set;
 import org.immutables.value.Value;
@@ -20,4 +21,9 @@ public interface Backup {
     Map<String, Message> getMessages();
 
     Map<String, Set<String>> getLabelsPresent();
+
+    default List<Message> getMessagesAsList() {
+        return getMessages().values()
+                .toList();
+    }
 }

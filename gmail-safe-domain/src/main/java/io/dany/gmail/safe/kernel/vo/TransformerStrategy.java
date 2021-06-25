@@ -1,7 +1,8 @@
 package io.dany.gmail.safe.kernel.vo;
 
 public enum TransformerStrategy {
-    JSON("json");
+    JSON("json"),
+    DEFAULT("default");
 
     private final String value;
 
