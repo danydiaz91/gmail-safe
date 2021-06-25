@@ -4,6 +4,7 @@ import io.dany.gmail.safe.common.Constants;
 import io.dany.gmail.safe.kernel.model.ImmutableMessage;
 import io.dany.gmail.safe.kernel.model.Message;
 import io.vavr.collection.HashSet;
+import io.vavr.collection.Set;
 
 import java.util.UUID;
 
@@ -25,6 +26,12 @@ public final class MessageFixture {
 
     public static Message newDefault() {
         return builder()
+                .build();
+    }
+
+    public static Message withLabels(Set<String> labels) {
+        return builder()
+                .labels(labels)
                 .build();
     }
 }

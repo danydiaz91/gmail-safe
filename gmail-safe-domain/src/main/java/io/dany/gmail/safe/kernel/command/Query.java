@@ -1,4 +1,4 @@
 package io.dany.gmail.safe.kernel.command;
 
-public interface Command {
+public interface Query {
 }

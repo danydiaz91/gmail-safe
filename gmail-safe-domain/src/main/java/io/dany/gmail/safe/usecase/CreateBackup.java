@@ -1,6 +1,7 @@
 package io.dany.gmail.safe.usecase;
 
 import io.dany.gmail.safe.kernel.exception.UseCaseException;
+import io.dany.gmail.safe.kernel.factory.BackupFactory;
 import io.dany.gmail.safe.kernel.model.Backup;
 import io.dany.gmail.safe.kernel.model.ImmutableBackup;
 import io.dany.gmail.safe.kernel.model.Message;
@@ -12,9 +13,6 @@ import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.collection.Set;
 import io.vavr.control.Either;
-
-import java.time.LocalDate;
-import java.util.UUID;
 
 /**
  * Create Backup Use Case
@@ -47,7 +45,7 @@ public class CreateBackup {
      * @return Either.right when it returns a Backup, otherwise Either.left (Exception)
      */
     public Either<UseCaseException, Backup> execute() {
-        Backup backup = newBackup();
+        Backup backup = BackupFactory.newBackupInProgress();
 
         messageRepository.findAll()
                 .onSuccess(messages -> backupCompleted(backup, messages))
@@ -59,20 +57,6 @@ public class CreateBackup {
     }
 
     /**
-     * It helps to create a new Backup with the status IN_PROGRESS
-     * and ID auto generated
-     *
-     * @return a new Backup
-     */
-    private Backup newBackup() {
-        return ImmutableBackup.builder()
-                .id(UUID.randomUUID().toString())
-                .date(LocalDate.now())
-                .status(Status.IN_PROGRESS)
-                .build();
-    }
-
-    /**
      * It helps to update the status of an existing Backup, then the
      * Backup will be stored in the repository.
      *
@@ -80,11 +64,7 @@ public class CreateBackup {
      * @param status new status
      */
     private void updateBackupStatus(Backup backup, Status status) {
-        Backup newBackup = ImmutableBackup.builder()
-                .from(backup)
-                .status(status)
-                .build();
-
+        Backup newBackup = BackupFactory.copyWith(backup, status);
         backupRepository.save(newBackup)
             .onFailure(Throwable::printStackTrace);
     }
