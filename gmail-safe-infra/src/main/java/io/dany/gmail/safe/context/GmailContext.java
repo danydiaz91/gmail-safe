@@ -29,19 +29,19 @@ import java.util.List;
 public class GmailContext {
 
     @Bean
-    public Gmail getGmail(Credential credential, NetHttpTransport httpTransport, JsonFactory jsonFactory) {
+    public Gmail gmail(Credential credential, NetHttpTransport httpTransport, JsonFactory jsonFactory) {
         return new Gmail.Builder(httpTransport, jsonFactory, credential)
                 .build();
     }
 
     @Bean
-    public Credential getCredential(NetHttpTransport httpTransport, File credentialFile, JsonFactory jsonFactory) throws IOException {
+    public Credential credential(NetHttpTransport httpTransport, File credentialFile, JsonFactory jsonFactory) throws IOException {
         InputStream in = new FileInputStream(credentialFile);
 
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(in));
 
 
-        List<String> gmailScopes = List.of(GmailScopes.GMAIL_LABELS, GmailScopes.GMAIL_READONLY);
+        List<String> gmailScopes = List.of(GmailScopes.GMAIL_READONLY);
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, jsonFactory, clientSecrets, gmailScopes)
@@ -54,18 +54,18 @@ public class GmailContext {
     }
 
     @Bean
-    public NetHttpTransport getNetHttpTransport() throws GeneralSecurityException, IOException {
+    public NetHttpTransport netHttpTransport() throws GeneralSecurityException, IOException {
         return GoogleNetHttpTransport.newTrustedTransport();
     }
 
     @Bean
-    public File getCredentialFile() throws FileNotFoundException {
+    public File credentialFile() throws FileNotFoundException {
         String resourceLocation = ResourceUtils.CLASSPATH_URL_PREFIX + "credentials.json";
         return ResourceUtils.getFile(resourceLocation);
     }
 
     @Bean
-    public JsonFactory getJsonFactory() {
+    public JsonFactory jsonFactory() {
         return GsonFactory.getDefaultInstance();
     }
 }

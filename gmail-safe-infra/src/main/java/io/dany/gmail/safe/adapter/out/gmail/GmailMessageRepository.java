@@ -21,7 +21,6 @@ public class GmailMessageRepository implements MessageRepository {
 
     @Override
     public Future<List<Message>> findAll() {
-        System.out.println("Reading Messages");
         return Future.of(() -> gmailClient.users().messages().get(USER_ID, "17a37255066fa210").execute())
                 //.map(ListMessagesResponse::getMessages)
                 .map(MessageMapper::toMessage)
