@@ -23,8 +23,15 @@ dependencies {
     implementation 'com.google.oauth-client:google-oauth-client-jetty:1.31.5'
     implementation 'com.google.apis:google-api-services-gmail:v1-rev110-1.25.0'
 
+    // Vavr
     implementation 'io.vavr:vavr:0.10.3'
     implementation 'io.vavr:vavr-jackson:0.10.3'
+
+    // Immutables
+    compileOnly 'org.immutables:value:2.8.8'
+    annotationProcessor 'org.immutables:value:2.8.8'
+    implementation 'org.immutables:builder:2.8.8'
+    compileOnly 'org.immutables.vavr:vavr-encodings:0.6.2'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
