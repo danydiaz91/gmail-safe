@@ -30,7 +30,7 @@ public class CreateBackup {
     private final BackupRepository backupRepository;
 
     /**
-     * Instantiates a new Create backup.
+     * Instantiates a new CreateBackup.
      *
      * @param messageRepository the message repository
      * @param backupRepository  the backup repository
