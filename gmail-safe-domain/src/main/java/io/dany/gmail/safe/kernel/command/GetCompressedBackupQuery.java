@@ -6,6 +6,8 @@ import io.vavr.control.Option;
 import org.immutables.value.Value;
 import org.immutables.vavr.encodings.VavrEncodingEnabled;
 
+import java.io.OutputStream;
+
 @Value.Immutable
 @VavrEncodingEnabled
 public interface GetCompressedBackupQuery extends Query {
@@ -16,4 +18,6 @@ public interface GetCompressedBackupQuery extends Query {
     TransformerStrategy getTransformerStrategy();
 
     CompressorStrategy getCompressorStrategy();
+
+    OutputStream getOutputStream();
 }

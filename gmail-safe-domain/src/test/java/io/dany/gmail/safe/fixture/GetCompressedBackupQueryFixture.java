@@ -5,6 +5,7 @@ import io.dany.gmail.safe.kernel.command.ImmutableGetCompressedBackupQuery;
 import io.dany.gmail.safe.kernel.vo.CompressorStrategy;
 import io.dany.gmail.safe.kernel.vo.TransformerStrategy;
 
+import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 public final class GetCompressedBackupQueryFixture {
@@ -16,6 +17,7 @@ public final class GetCompressedBackupQueryFixture {
         return ImmutableGetCompressedBackupQuery.builder()
                 .transformerStrategy(TransformerStrategy.DEFAULT)
                 .compressorStrategy(CompressorStrategy.DEFAULT)
+                .outputStream(new ByteArrayOutputStream())
                 .backupId(UUID.randomUUID().toString());
     }
 
