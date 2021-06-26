@@ -7,10 +7,17 @@ import io.dany.gmail.safe.kernel.model.Message;
 import io.dany.gmail.safe.usecase.port.MessageRepository;
 import io.vavr.collection.List;
 import io.vavr.concurrent.Future;
+import io.vavr.control.Try;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+
+import java.util.Objects;
 
 @Repository
 public class GmailMessageRepository implements MessageRepository {
+
+    private static final Logger log = LoggerFactory.getLogger(GmailMessageRepository.class);
 
     private static final String USER_ID = "me";
 
@@ -23,8 +30,9 @@ public class GmailMessageRepository implements MessageRepository {
     @Override
     public Future<List<Message>> findAll() {
         return findAllGmailMessages()
-                .flatMap(this::findFullMessages)
-                .onFailure(Throwable::printStackTrace);
+                .map(this::findFullMessages)
+                .onFailure(Throwable::printStackTrace)
+                .onSuccess(oMessages -> log.info("Messages Found: {}", oMessages.size()));
     }
 
     private Future<List<com.google.api.services.gmail.model.Message>> findAllGmailMessages() {
@@ -49,15 +57,17 @@ public class GmailMessageRepository implements MessageRepository {
         });
     }
 
-    private Future<List<Message>> findFullMessages(List<com.google.api.services.gmail.model.Message> messages) {
-        return Future.of(() -> List.ofAll(messages
-                .flatMap(message -> findById(message.getId())))
-                .toList());
+    private List<Message> findFullMessages(List<com.google.api.services.gmail.model.Message> messages) {
+        return messages.toJavaParallelStream()
+                .map(message -> findById(message.getId()))
+                .filter(Objects::nonNull)
+                .collect(List.collector());
     }
 
-    private Future<Message> findById(String messageId) {
-        return Future.of(() -> gmailClient.users().messages().get(USER_ID, messageId).execute())
+    private Message findById(String messageId) {
+        return Try.of(() -> gmailClient.users().messages().get(USER_ID, messageId).execute())
                 .map(MessageMapper::toMessage)
-                .onFailure(Throwable::printStackTrace);
+                .onFailure(Throwable::printStackTrace)
+                .getOrElse(() -> null);
     }
 }
