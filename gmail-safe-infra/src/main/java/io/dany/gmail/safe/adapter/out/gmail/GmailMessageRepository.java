@@ -32,7 +32,7 @@ public class GmailMessageRepository implements MessageRepository {
         return findAllGmailMessages()
                 .map(this::findFullMessages)
                 .onFailure(Throwable::printStackTrace)
-                .onSuccess(oMessages -> log.info("Messages Founded: {}", oMessages.size()));
+                .onSuccess(oMessages -> log.info("Messages Found: {}", oMessages.size()));
     }
 
     private Future<List<com.google.api.services.gmail.model.Message>> findAllGmailMessages() {
